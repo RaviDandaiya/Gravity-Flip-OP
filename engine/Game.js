@@ -57,6 +57,12 @@ export class Game {
             const code = e.code;
             const key = e.key.toLowerCase();
 
+            // Prevent scrolling for game keys
+            const scrollKeys = ['space', 'arrowup', 'arrowdown', 'arrowleft', 'arrowright'];
+            if (scrollKeys.includes(key) || scrollKeys.includes(code.toLowerCase())) {
+                e.preventDefault();
+            }
+
             if (this.state !== 'PLAYING') {
                 if (key === 'enter' || code === 'Space') {
                     if (this.state === 'MENU' || this.state === 'GAME_OVER') this.resetGame();
