@@ -63,17 +63,24 @@
 
         <div id="ui-layer">
             <div id="menu-screen" class="screen">
-                <h1 class="game-title">GRAVITY<br><span>FLIP</span></h1>
+                <div id="ambient-fx"></div>
+                <h1 class="game-title">GRAVITY<br><span class="accent">FLIP</span></h1>
                 <div class="menu-buttons">
-                    <button id="start-solo" class="btn btn-primary">SINGLE PLAYER</button>
-                    <button id="start-multi" class="btn btn-secondary">RACE VS BOT</button>
+                    <button id="start-solo" class="btn btn-primary">
+                        SINGLE PLAYER
+                        <span class="btn-sub">Explore the Depths</span>
+                    </button>
+                    <button id="start-multi" class="btn btn-secondary">
+                        RACE VS BOT
+                        <span class="btn-sub">Speed Rivalry</span>
+                    </button>
 
                     <div class="theme-selector">
-                        <p>SELECT THEME:</p>
+                        <p>STYLE CONFIG</p>
                         <div class="theme-options">
-                            <button class="theme-btn active" data-theme="NEON">NEON</button>
-                            <button class="theme-btn" data-theme="MONO">MONO</button>
-                            <button class="theme-btn" data-theme="SPACE">SPACE</button>
+                            <button class="theme-btn active" data-theme="NEON">CAVE</button>
+                            <button class="theme-btn" data-theme="MONO">DARK</button>
+                            <button class="theme-btn" data-theme="SPACE">VOID</button>
                         </div>
                     </div>
                 </div>

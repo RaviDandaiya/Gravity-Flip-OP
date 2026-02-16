@@ -70,18 +70,26 @@ export class LevelManager {
             addP(floor, c, 4, 1);
 
             // 4. Randomize obstacles OUTSIDE the safe path
+            let obstaclePlacedInThisSegment = false;
+
             if (rand > 0.3 && rand < 0.7) {
                 // Add a "Pillar" or "Spike" that doesn't block the pathGap
                 const side = Math.random() > 0.5 ? 'top' : 'bottom';
                 if (side === 'top') {
                     // Block from ceil down to safeTop
                     for (let r = ceil + 1; r < safeTop; r++) addP(r, c + 1);
-                    addS(safeTop - 1, c + 1, -1);
+                    obstaclePlacedInThisSegment = true;
                 } else {
                     // Block from floor up to safeBottom
                     for (let r = floor - 1; r > safeBottom; r--) addP(r, c + 2);
-                    addS(safeBottom + 1, c + 2, 1);
+                    obstaclePlacedInThisSegment = true;
                 }
+            }
+
+            // ONLY add spikes if no vertical pillar was placed in this 4-tile segment
+            if (!obstaclePlacedInThisSegment && rand > 0.7) {
+                if (Math.random() > 0.5) addS(safeTop - 1, c + 1, -1);
+                else addS(safeBottom + 1, c + 2, 1);
             }
 
             // Fill borders slightly for visual continuity
