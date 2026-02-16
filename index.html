@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GRAVITY FLIP - Neon Hardcore Gravity Runner | Play Free Online</title>
+    <meta name="description"
+        content="Play Gravity Flip, the most intense neon side-scroller browser game. Master gravity shifting, clear 20 hardcore levels, and race against advanced bots. Free to play gravity runner!">
+    <meta name="keywords"
+        content="gravity flip, gravity runner, neon runner, hardcore platformer, browser game, free online game, gravity shift, fast paced runner, arcade games, neon aesthetics, race against bot, side-scroller, gravity flip 2d, neon dash, gravity rush browser, skill based game, geometry dash style, gravity hero, flip game, space runner">
+    <meta name="author" content="Gravity Flip Arcade">
+    <link rel="canonical" href="https://gravity-flip.example.com/" />
+
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://gravity-flip.example.com/">
+    <meta property="og:title" content="GRAVITY FLIP - Neon Hardcore Gravity Runner">
+    <meta property="og:description"
+        content="Can you master the flip? Experience intense gravity-shifting action in this neon runner. Play 20 levels or race the bot!">
+    <meta property="og:image" content="https://gravity-flip.example.com/social-preview.png">
+
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image">
+    <meta property="twitter:url" content="https://gravity-flip.example.com/">
+    <meta property="twitter:title" content="GRAVITY FLIP - Neon Hardcore Gravity Runner">
+    <meta property="twitter:description"
+        content="Master the flip in this intense neon runner. Master 20 levels or race the bot for free online!">
+    <meta property="twitter:image" content="https://gravity-flip.example.com/social-preview.png">
+
+    <!-- Structured Data for Search Engines -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "SoftwareApplication",
+      "name": "Gravity Flip",
+      "operatingSystem": "Web browser",
+      "applicationCategory": "GameApplication",
+      "genre": "Runner",
+      "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "USD"
+      },
+      "aggregateRating": {
+        "@type": "AggregateRating",
+        "ratingValue": "4.8",
+        "ratingCount": "150"
+      },
+      "description": "An intense neon gravity-shifting runner game with 20 levels and a bot racing mode."
+    }
+    </script>
+
+    <link rel="stylesheet" href="./style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;700;900&display=swap" rel="stylesheet">
+</head>
+
+<body>
+    <div id="app">
+        <canvas id="gameCanvas"></canvas>
+
+        <div id="ui-layer">
+            <div id="menu-screen" class="screen">
+                <h1 class="game-title">GRAVITY<br><span>FLIP</span></h1>
+                <div class="menu-buttons">
+                    <button id="start-solo" class="btn btn-primary">SINGLE PLAYER</button>
+                    <button id="start-multi" class="btn btn-secondary">RACE VS BOT</button>
+
+                    <div class="theme-selector">
+                        <p>SELECT THEME:</p>
+                        <div class="theme-options">
+                            <button class="theme-btn active" data-theme="NEON">NEON</button>
+                            <button class="theme-btn" data-theme="MONO">MONO</button>
+                            <button class="theme-btn" data-theme="SPACE">SPACE</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="game-ui" class="screen hidden">
+                <div class="stats-top">
+                    <div id="level-display">LEVEL: 1</div>
+                    <button id="ingame-reset" class="btn-tiny">RESET (R)</button>
+                    <div id="score-display">GOAL: 250m</div>
+                </div>
+                <div class="game-hint">CLICK TO FLIP</div>
+            </div>
+
+            <div id="level-complete-screen" class="screen hidden">
+                <div class="success-banner">LEVEL COMPLETE!</div>
+                <div class="next-level-text">PREPARING NEXT LEVEL...</div>
+            </div>
+
+            <div id="game-over-screen" class="screen hidden">
+                <h2 id="winner-text">GAME OVER</h2>
+                <div id="final-stats-container">
+                    <p id="final-level">Level: 1</p>
+                    <p id="final-distance">Distance: 0m</p>
+                </div>
+                <div class="menu-buttons">
+                    <button id="restart-btn" class="btn btn-primary">PLAY AGAIN</button>
+                    <button id="main-menu-btn" class="btn btn-secondary">MAIN MENU</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script type="module" src="./main.js"></script>
+</body>
+
+</html>
