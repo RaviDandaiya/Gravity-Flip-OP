@@ -91,54 +91,79 @@ export class Player extends Entity {
     }
 
     update(dt, arenaHeight, platforms) {
-        // Apply gravity
+        // 1. Gravity & Vertical Movement
         this.vy += this.gravity * this.gravityDir * dt;
-
-        // Horizontal movement is constant
-        this.vx = this.baseSpeed;
-
-        // Predictive vertical movement for collision
         const nextY = this.y + this.vy * dt;
-        let collisionOccurred = false;
+        let vCollision = false;
 
         if (platforms) {
             for (const platform of platforms) {
                 const pb = platform.getBounds();
                 const mb = {
-                    left: this.x,
-                    right: this.x + this.width,
+                    left: this.x + 2, // Slight inset for vertical check
+                    right: this.x + this.width - 2,
                     top: nextY,
                     bottom: nextY + this.height
                 };
 
-                // Horizontal overlap
                 if (mb.left < pb.right && mb.right > pb.left) {
-                    // Moving down and hitting top of platform
                     if (this.gravityDir === 1 && this.y + this.height <= pb.top && mb.bottom >= pb.top) {
                         this.y = pb.top - this.height;
                         this.vy = 0;
                         this.isGrounded = true;
-                        collisionOccurred = true;
+                        vCollision = true;
                         break;
                     }
-                    // Moving up and hitting bottom of platform
                     if (this.gravityDir === -1 && this.y >= pb.bottom && mb.top <= pb.bottom) {
                         this.y = pb.bottom;
                         this.vy = 0;
                         this.isGrounded = true;
-                        collisionOccurred = true;
+                        vCollision = true;
                         break;
                     }
                 }
             }
         }
 
-        if (!collisionOccurred) {
+        if (!vCollision) {
             this.y = nextY;
             this.isGrounded = false;
         }
 
-        this.x += this.vx * dt;
+        // 2. Horizontal Movement & Wall Collision
+        this.vx = this.baseSpeed;
+        const nextX = this.x + this.vx * dt;
+        let hCollision = false;
+
+        if (platforms) {
+            for (const platform of platforms) {
+                const pb = platform.getBounds();
+                const mb = {
+                    left: nextX,
+                    right: nextX + this.width,
+                    top: this.y + 2, // Inset to avoid floor/ceiling snagging
+                    bottom: this.y + this.height - 2
+                };
+
+                // Vertical overlap
+                if (mb.top < pb.bottom && mb.bottom > pb.top) {
+                    // Moving right and hitting left-side of platform (wall)
+                    if (this.x + this.width <= pb.left && mb.right >= pb.left) {
+                        this.x = pb.left - this.width;
+                        this.vx = 0;
+                        hCollision = true;
+                        break;
+                    }
+                }
+            }
+        }
+
+        if (!hCollision) {
+            this.x = nextX;
+        } else {
+            // If we hit a wall in a side-scroller, we're usually screwed or pushed back
+            // For now, let's just stop or slight nudge
+        }
 
         // Update trail for shadow animation
         this.trail.unshift({ x: this.x, y: this.y, scale: this.currentVisualScale || this.gravityDir });

@@ -11,28 +11,23 @@ export class Spike extends Entity {
     }
 
     draw(ctx, offsetX) {
-        ctx.save();
-        ctx.translate(this.x + this.width / 2 - offsetX, this.y + this.height / 2);
+        const drawX = this.x - offsetX;
+        ctx.fillStyle = '#ff3333';
+        ctx.strokeStyle = '#000';
+        ctx.lineWidth = 2;
 
-        ctx.shadowBlur = 10;
-        ctx.shadowColor = this.color;
-
-        ctx.fillStyle = this.color;
         ctx.beginPath();
-        if (this.direction === 1) {
-            // Triangle pointing up
-            ctx.moveTo(0, -this.height / 2);
-            ctx.lineTo(this.width / 2, this.height / 2);
-            ctx.lineTo(-this.width / 2, this.height / 2);
-        } else {
-            // Triangle pointing down
-            ctx.moveTo(0, this.height / 2);
-            ctx.lineTo(this.width / 2, -this.height / 2);
-            ctx.lineTo(-this.width / 2, -this.height / 2);
+        if (this.direction === 1) { // Facing up
+            ctx.moveTo(drawX, this.y + this.height);
+            ctx.lineTo(drawX + this.width / 2, this.y);
+            ctx.lineTo(drawX + this.width, this.y + this.height);
+        } else { // Facing down
+            ctx.moveTo(drawX, this.y);
+            ctx.lineTo(drawX + this.width / 2, this.y + this.height);
+            ctx.lineTo(drawX + this.width, this.y);
         }
         ctx.closePath();
         ctx.fill();
-
-        ctx.restore();
+        ctx.stroke();
     }
 }

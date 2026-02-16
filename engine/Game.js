@@ -133,28 +133,15 @@ export class Game {
     }
 
     initLevel() {
-        const isMulti = this.mode === 'MULTI';
-        const config = isMulti
-            ? this.levelManager.getDungeonLevelConfig(this.levelManager.currentLevel)
-            : this.levelManager.getDungeonLevelConfig(this.levelManager.currentLevel); // Let's use it for both now for the "Escape" request
+        const config = this.levelManager.getMazeLevelConfig(this.levelManager.currentLevel);
 
         this.platforms = config.platforms;
         this.hazards = config.hazards;
         this.goal = config.goal;
         this.offsetX = 0;
 
-        // Background particles - Clouds for Solo, Dust/Embers for Dungeon
+        // Reset particles (Minimalist mode - no clouds/dust)
         this.clouds = [];
-        const cloudCount = isMulti ? 30 : 15;
-        for (let i = 0; i < cloudCount; i++) {
-            this.clouds.push({
-                x: Math.random() * this.width * 2,
-                y: Math.random() * this.height,
-                size: isMulti ? 2 + Math.random() * 3 : 20 + Math.random() * 60,
-                speed: 0.2 + Math.random() * 0.3,
-                opacity: isMulti ? 0.2 : 0.4
-            });
-        }
 
         this.players = [];
         if (this.mode === 'SOLO') {
@@ -252,22 +239,28 @@ export class Game {
     draw() {
         this.ctx.clearRect(0, 0, this.width, this.height);
 
-        // Draw Parallax Clouds/Dust
-        if (this.clouds) {
-            this.clouds.forEach(c => {
-                this.ctx.fillStyle = `rgba(255, 255, 255, ${c.opacity || 0.4})`;
-                const cx = (c.x - this.offsetX * c.speed) % (this.width * 2);
-                const drawX = cx < 0 ? cx + this.width * 2 : cx;
-                this.ctx.beginPath();
-                this.ctx.arc(drawX, c.y, c.size, 0, Math.PI * 2);
-                this.ctx.fill();
-            });
-        }
+        // Dark Stone Maze Background
+        this.ctx.fillStyle = '#111';
+        this.ctx.fillRect(0, 0, this.width, this.height);
 
-        // Darken the ground area slightly for better contrast
-        this.ctx.fillStyle = 'rgba(0, 0, 0, 0.05)';
-        this.ctx.fillRect(0, 0, this.width, 100);
-        this.ctx.fillRect(0, this.height - 100, this.width, 100);
+        // Grid lines for maze feel
+        this.ctx.strokeStyle = 'rgba(255, 255, 255, 0.03)';
+        this.ctx.lineWidth = 1;
+        const gridSpacing = 50;
+        const gridOffset = -(this.offsetX % gridSpacing);
+
+        for (let x = gridOffset; x < this.width; x += gridSpacing) {
+            this.ctx.beginPath();
+            this.ctx.moveTo(x, 0);
+            this.ctx.lineTo(x, this.height);
+            this.ctx.stroke();
+        }
+        for (let y = 0; y < this.height; y += gridSpacing) {
+            this.ctx.beginPath();
+            this.ctx.moveTo(0, y);
+            this.ctx.lineTo(this.width, y);
+            this.ctx.stroke();
+        }
 
         if (this.platforms) this.platforms.forEach(p => p.draw(this.ctx, this.offsetX));
         if (this.hazards) this.hazards.forEach(h => h.draw(this.ctx, this.offsetX));
