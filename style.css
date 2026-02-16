@@ -20,20 +20,24 @@
 
 html,
 body {
-  height: 100%;
+  min-height: 100%;
   width: 100%;
   margin: 0;
   padding: 0;
-  overflow: hidden;
+  overflow-x: hidden;
+  overflow-y: auto;
 }
 
 body {
   font-family: 'Outfit', sans-serif;
-  background-color: #111;
+  background-color: #000;
   color: var(--text-color);
   display: flex;
-  justify-content: center;
+  flex-direction: column;
+  justify-content: flex-start;
   align-items: center;
+  padding: 20px 0;
+  gap: 20px;
 }
 
 #app {
@@ -329,17 +333,15 @@ body {
 }
 
 #ad-banner {
-  position: absolute;
-  bottom: 0;
-  left: 0;
   width: 100%;
+  max-width: 1200px;
   display: flex;
   justify-content: center;
   align-items: center;
-  z-index: 2000;
-  background: rgba(0, 0, 0, 0.4);
-  padding: 4px 0;
-  pointer-events: auto;
+  background: #111;
+  padding: 15px 0;
+  border-top: 2px solid #222;
+  margin-top: auto;
 }
 
 @media screen and (max-width: 600px) {
