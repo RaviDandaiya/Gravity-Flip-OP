@@ -25,9 +25,9 @@ export class Game {
         this.offsetY = 0;
 
         this.themes = {
-            'NEON': { sky: '#87ceeb', platform: '#ff8c00', hazard: '#ff3333', p1: '#39FF14', bot: '#FF00FF' },
-            'MONO': { sky: '#f0f0f0', platform: '#333333', hazard: '#888888', p1: '#000000', bot: '#666666' },
-            'SPACE': { sky: '#0b0b0d', platform: '#a020f0', hazard: '#00ffff', p1: '#00ff00', bot: '#ff00ff' }
+            'NEON': { sky: '#1a1a1a', platform: '#bdbdbd', hazard: '#ffffff', p1: '#4fc3f7', bot: '#aab' },
+            'MONO': { sky: '#111', platform: '#eee', hazard: '#fff', p1: '#00ccff', bot: '#888' },
+            'SPACE': { sky: '#050505', platform: '#aaa', hazard: '#fff', p1: '#4fc3f7', bot: '#999' }
         };
         this.currentTheme = 'NEON';
 

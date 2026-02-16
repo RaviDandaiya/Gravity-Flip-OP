@@ -42,54 +42,51 @@ export class LevelManager {
 
         // Generate winding path segments
         let currentR = Math.floor(gridRows / 2);
-        const corridorHeight = 6; // Wider tunnels (Easy Mode)
+        const corridorHeight = 6; // Total height of the "bubble" around currentR
+        const pathGap = 3; // Guaranteed empty space in the middle of currentR
 
         for (let c = 0; c < gridCols; c += 4) {
-            const segmentWidth = 4;
-            const isStart = c < 12; // 720px safe start
+            const isStart = c < 12; // Safe zone
             const isEnd = c > gridCols - 8;
 
             if (isStart || isEnd) continue;
 
             const rand = Math.random();
-            const halfH = Math.floor(corridorHeight / 2);
 
-            if (rand < 0.1) { // Reduced verticality
-                // Vertical Shaft UP
-                const upDist = 1;
-                const newR = Math.max(3, currentR - upDist);
-                for (let r = newR - halfH; r <= currentR + halfH; r++) {
-                    addP(r, c);
-                    addP(r, c + 3);
+            // 1. Move the focal path height occasionally (Slowly)
+            if (rand < 0.15) currentR = Math.max(3, currentR - 1);
+            else if (rand > 0.85) currentR = Math.min(gridRows - 4, currentR + 1);
+
+            // 2. Define the "Safe Zone" around currentR that MUST be empty
+            const safeTop = currentR - Math.floor(pathGap / 2);
+            const safeBottom = currentR + Math.floor(pathGap / 2);
+
+            // 3. Define the "Corridor Walls" (Outer boundary)
+            const ceil = currentR - Math.floor(corridorHeight / 2);
+            const floor = currentR + Math.floor(corridorHeight / 2);
+
+            // Add Ceiling and Floor blocks
+            addP(ceil, c, 4, 1);
+            addP(floor, c, 4, 1);
+
+            // 4. Randomize obstacles OUTSIDE the safe path
+            if (rand > 0.3 && rand < 0.7) {
+                // Add a "Pillar" or "Spike" that doesn't block the pathGap
+                const side = Math.random() > 0.5 ? 'top' : 'bottom';
+                if (side === 'top') {
+                    // Block from ceil down to safeTop
+                    for (let r = ceil + 1; r < safeTop; r++) addP(r, c + 1);
+                    addS(safeTop - 1, c + 1, -1);
+                } else {
+                    // Block from floor up to safeBottom
+                    for (let r = floor - 1; r > safeBottom; r--) addP(r, c + 2);
+                    addS(safeBottom + 1, c + 2, 1);
                 }
-                currentR = newR;
-            } else if (rand > 0.9) {
-                // Vertical Shaft DOWN
-                const downDist = 1;
-                const newR = Math.min(gridRows - 4, currentR + downDist);
-                for (let r = currentR - halfH; r <= newR + halfH; r++) {
-                    addP(r, c);
-                    addP(r, c + 3);
-                }
-                currentR = newR;
-            } else {
-                // Horizontal Corridor
-                const ceil = currentR - halfH;
-                const floor = currentR + halfH;
-                addP(ceil, c, 4, 1);
-                addP(floor, c, 4, 1);
-
-                // Fewer spikes (Probability 0.2 instead of 0.4+)
-                if (Math.random() > 0.8) addS(ceil, c + 1, -1);
-                if (Math.random() > 0.8) addS(floor - 1, c + 2, 1);
-
-                // Occasional floating block, but not blocking the path
-                if (Math.random() > 0.9) addP(currentR, c + 2, 1, 1);
             }
 
-            // Smoothing borders
-            addP(currentR - (halfH + 1), c, 4, 1);
-            addP(currentR + (halfH + 1), c, 4, 1);
+            // Fill borders slightly for visual continuity
+            addP(ceil - 1, c, 4, 1);
+            addP(floor + 1, c, 4, 1);
         }
 
         const goal = new Goal(levelLength - 150, 0, this.canvasHeight);
