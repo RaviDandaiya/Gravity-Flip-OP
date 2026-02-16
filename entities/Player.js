@@ -7,7 +7,9 @@ export class Player extends Entity {
         this.gravity = 1500;
         this.gravityDir = 1; // 1 for down, -1 for up
         this.baseSpeed = 500; // Faster game!
-        this.vx = this.baseSpeed;
+        this.baseSpeed = 500; // Manual speed
+        this.vx = 0; // Starts still
+        this.vy = 0;
         this.isGrounded = false;
         this.flipCooldown = 0;
         this.isBot = isBot;
@@ -103,6 +105,7 @@ export class Player extends Entity {
             if (this.keys.right) moveX += this.baseSpeed * dt;
         }
 
+        this.vx = moveX / dt; // Track current velocity for animation/bots
         this.x += moveX;
 
         for (const platform of platforms) {
@@ -126,15 +129,18 @@ export class Player extends Entity {
         for (const platform of platforms) {
             if (this.collidesWith(platform)) {
                 const pb = platform.getBounds();
-                if (this.vy * this.gravityDir >= 0) { // Falling onto surface
-                    if (this.gravityDir === 1) {
+                // If moving into platform vertically
+                const movingDown = this.vy * this.gravityDir > 0;
+
+                if (movingDown) { // Landing/Falling onto
+                    if (this.gravityDir === 1) { // Normal gravity
                         this.y = pb.top - this.height;
-                    } else {
+                    } else { // Inverted gravity
                         this.y = pb.bottom;
                     }
                     this.vy = 0;
                     this.isGrounded = true;
-                } else { // Jumping into surface (ceiling hit)
+                } else { // Hitting ceiling
                     if (this.gravityDir === 1) {
                         this.y = pb.bottom;
                     } else {

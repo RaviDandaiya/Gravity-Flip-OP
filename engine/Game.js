@@ -190,10 +190,10 @@ export class Game {
                 p.update(cappedDt, this.height, this.platforms);
             });
 
-            const leadPlayerX = Math.max(...this.players.map(p => p.x));
-            this.offsetX = leadPlayerX - 200;
+            const humanPlayer = this.players[0];
+            this.offsetX = humanPlayer.x - 200;
 
-            const dist = Math.floor((this.goal.x - leadPlayerX) / 10);
+            const dist = Math.floor((this.goal.x - humanPlayer.x) / 10);
             this.ui.updateTimer(dist > 0 ? dist : 0);
 
             // Goal/Death checks
