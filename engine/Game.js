@@ -239,27 +239,21 @@ export class Game {
     draw() {
         this.ctx.clearRect(0, 0, this.width, this.height);
 
-        // Dark Stone Maze Background
-        this.ctx.fillStyle = '#111';
+        // Dark Stone Texture Background
+        this.ctx.fillStyle = '#0a0a0a';
         this.ctx.fillRect(0, 0, this.width, this.height);
 
-        // Grid lines for maze feel
-        this.ctx.strokeStyle = 'rgba(255, 255, 255, 0.03)';
-        this.ctx.lineWidth = 1;
-        const gridSpacing = 50;
-        const gridOffset = -(this.offsetX % gridSpacing);
+        // Stone block pattern
+        this.ctx.fillStyle = '#121212';
+        const bh = 40;
+        const bw = 80;
+        const bOffset = this.offsetX % bw;
 
-        for (let x = gridOffset; x < this.width; x += gridSpacing) {
-            this.ctx.beginPath();
-            this.ctx.moveTo(x, 0);
-            this.ctx.lineTo(x, this.height);
-            this.ctx.stroke();
-        }
-        for (let y = 0; y < this.height; y += gridSpacing) {
-            this.ctx.beginPath();
-            this.ctx.moveTo(0, y);
-            this.ctx.lineTo(this.width, y);
-            this.ctx.stroke();
+        for (let y = 0; y < this.height; y += bh) {
+            const rowShift = (y / bh) % 2 === 0 ? 0 : bw / 2;
+            for (let x = -bw - rowShift + (bw - bOffset); x < this.width + bw; x += bw) {
+                this.ctx.fillRect(x, y, bw - 2, bh - 2);
+            }
         }
 
         if (this.platforms) this.platforms.forEach(p => p.draw(this.ctx, this.offsetX));
