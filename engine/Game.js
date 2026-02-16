@@ -22,6 +22,7 @@ export class Game {
         this.state = 'MENU';
         this.mode = 'SOLO';
         this.offsetX = 0;
+        this.offsetY = 0;
 
         this.themes = {
             'NEON': { sky: '#87ceeb', platform: '#ff8c00', hazard: '#ff3333', p1: '#39FF14', bot: '#FF00FF' },
@@ -110,11 +111,7 @@ export class Game {
         });
 
         window.addEventListener('keyup', (e) => {
-            const key = e.key.toLowerCase();
-            if (this.players[0]) {
-                if (key === 'arrowleft' || key === 'a') this.players[0].keys.left = false;
-                if (key === 'arrowright' || key === 'd') this.players[0].keys.right = false;
-            }
+            // No manual horizontal cleanup needed in auto-move
         });
     }
 
@@ -159,11 +156,11 @@ export class Game {
 
         this.players = [];
         if (this.mode === 'SOLO') {
-            this.players.push(new Player(100, this.height / 2, '#39FF14', 'YOU'));
+            this.players.push(new Player(100, this.height / 2, '#4fc3f7', 'YOU'));
         } else {
             // Player 1 starts at 100, Bot starts at 50 (trailing slightly)
-            this.players.push(new Player(100, this.height / 3, '#39FF14', 'P1'));
-            const bot = new Player(50, 2 * this.height / 3, '#FF00FF', 'PRO BOT', true);
+            this.players.push(new Player(100, this.height / 3, '#4fc3f7', 'P1'));
+            const bot = new Player(50, 2 * this.height / 3, '#aab', 'PRO BOT', true);
             bot.baseSpeed = 530; // Significant speed advantage
             this.players.push(bot);
         }
@@ -192,6 +189,7 @@ export class Game {
 
             const humanPlayer = this.players[0];
             this.offsetX = humanPlayer.x - 200;
+            this.offsetY = humanPlayer.y - this.height / 2;
 
             const dist = Math.floor((this.goal.x - humanPlayer.x) / 10);
             this.ui.updateTimer(dist > 0 ? dist : 0);
@@ -253,26 +251,34 @@ export class Game {
     draw() {
         this.ctx.clearRect(0, 0, this.width, this.height);
 
-        // Dark Stone Texture Background
-        this.ctx.fillStyle = '#0a0a0a';
+        // Dark Textured Stone Background
+        this.ctx.fillStyle = '#1a1a1a';
         this.ctx.fillRect(0, 0, this.width, this.height);
 
-        // Stone block pattern
-        this.ctx.fillStyle = '#121212';
-        const bh = 40;
-        const bw = 80;
+        // Stone blocks with details
+        const bh = 50;
+        const bw = 100;
         const bOffset = this.offsetX % bw;
 
         for (let y = 0; y < this.height; y += bh) {
             const rowShift = (y / bh) % 2 === 0 ? 0 : bw / 2;
             for (let x = -bw - rowShift + (bw - bOffset); x < this.width + bw; x += bw) {
+                // Main block
+                this.ctx.fillStyle = '#0f0f0f';
                 this.ctx.fillRect(x, y, bw - 2, bh - 2);
+
+                // Subtle cracks/texture noise
+                this.ctx.fillStyle = 'rgba(255,255,255,0.02)';
+                if ((x + y) % 3 === 0) {
+                    this.ctx.fillRect(x + 10, y + 20, 20, 1);
+                    this.ctx.fillRect(x + 40, y + 10, 1, 15);
+                }
             }
         }
 
-        if (this.platforms) this.platforms.forEach(p => p.draw(this.ctx, this.offsetX));
-        if (this.hazards) this.hazards.forEach(h => h.draw(this.ctx, this.offsetX));
-        if (this.goal) this.goal.draw(this.ctx, this.offsetX);
-        if (this.players) this.players.forEach(p => p.draw(this.ctx, this.offsetX));
+        if (this.platforms) this.platforms.forEach(p => p.draw(this.ctx, this.offsetX, this.offsetY));
+        if (this.hazards) this.hazards.forEach(h => h.draw(this.ctx, this.offsetX, this.offsetY));
+        if (this.goal) this.goal.draw(this.ctx, this.offsetX, this.offsetY);
+        if (this.players) this.players.forEach(p => p.draw(this.ctx, this.offsetX, this.offsetY));
     }
 }

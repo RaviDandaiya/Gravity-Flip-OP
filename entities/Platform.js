@@ -5,16 +5,17 @@ export class Platform extends Entity {
         super(x, y, width, height, color);
     }
 
-    draw(ctx, offsetX) {
+    draw(ctx, offsetX, offsetY = 0) {
         const drawX = this.x - offsetX;
+        const drawY = this.y - offsetY;
 
-        // High contrast minimalist style
-        ctx.fillStyle = this.color;
-        ctx.fillRect(drawX, this.y, this.width, this.height);
+        // Cave block style
+        ctx.fillStyle = '#bdbdbd';
+        ctx.fillRect(drawX, drawY, this.width, this.height);
 
-        // Sharp border/outline for structural look
-        ctx.strokeStyle = '#333';
-        ctx.lineWidth = 2;
-        ctx.strokeRect(drawX, this.y, this.width, this.height);
+        // Dark border
+        ctx.strokeStyle = '#424242';
+        ctx.lineWidth = 1;
+        ctx.strokeRect(drawX, drawY, this.width, this.height);
     }
 }

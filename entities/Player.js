@@ -97,15 +97,10 @@ export class Player extends Entity {
         if (!platforms) return;
 
         // 1. Horizontal Movement & Resolution
-        let moveX = 0;
-        if (this.isBot) {
-            moveX = this.baseSpeed * dt;
-        } else {
-            if (this.keys.left) moveX -= this.baseSpeed * dt;
-            if (this.keys.right) moveX += this.baseSpeed * dt;
-        }
+        let moveX = this.baseSpeed * dt;
 
-        this.vx = moveX / dt; // Track current velocity for animation/bots
+        // Track current velocity for animation/bots
+        this.vx = moveX / dt;
         this.x += moveX;
 
         for (const platform of platforms) {
@@ -165,14 +160,14 @@ export class Player extends Entity {
         this.currentVisualScale += (targetScale - this.currentVisualScale) * 15 * dt;
     }
 
-    draw(ctx, offsetX) {
+    draw(ctx, offsetX, offsetY = 0) {
         // 1. Draw Shadow Trail
         this.trail.forEach((t, i) => {
             const alpha = (0.3 - (i * 0.05));
             if (alpha <= 0) return;
             ctx.save();
             ctx.globalAlpha = alpha;
-            ctx.translate(t.x + this.width / 2 - offsetX, t.y + this.height / 2);
+            ctx.translate(t.x + this.width / 2 - offsetX, t.y + this.height / 2 - offsetY);
             ctx.scale(1, t.scale);
             ctx.fillStyle = this.color;
             ctx.fillRect(-this.width / 2, -this.height / 2, this.width, this.height);
@@ -184,7 +179,7 @@ export class Player extends Entity {
         ctx.shadowBlur = 20;
         ctx.shadowColor = this.color;
 
-        ctx.translate(this.x + this.width / 2 - offsetX, this.y + this.height / 2);
+        ctx.translate(this.x + this.width / 2 - offsetX, this.y + this.height / 2 - offsetY);
 
         // Apply smooth flip animation
         ctx.scale(1, this.currentVisualScale || this.gravityDir);
@@ -199,15 +194,15 @@ export class Player extends Entity {
 
         // Eyes (drawn on top of black body)
         ctx.fillStyle = '#ffffff';
-        const eyeW = 6;
-        const eyeH = 6;
-        ctx.fillRect(-10, -8, eyeW, eyeH);
-        ctx.fillRect(4, -8, eyeW, eyeH);
+        const eyeW = 10;
+        const eyeH = 10;
+        ctx.fillRect(-12, -10, eyeW, eyeH);
+        ctx.fillRect(2, -10, eyeW, eyeH);
 
         // Pupils
         ctx.fillStyle = '#000000';
-        ctx.fillRect(-8, -6, 2, 2);
-        ctx.fillRect(6, -6, 2, 2);
+        ctx.fillRect(-8, -6, 4, 4);
+        ctx.fillRect(6, -6, 4, 4);
 
         ctx.restore();
 

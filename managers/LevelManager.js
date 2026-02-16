@@ -14,67 +14,86 @@ export class LevelManager {
     }
 
     getMazeLevelConfig(level) {
-        const levelLength = 3000 + level * 500;
+        const levelLength = 4000 + level * 1000;
         const platforms = [];
         const hazards = [];
-        const platHeight = 60; // Thicker walls
+        const tileSize = 60;
+        const gridRows = Math.floor(this.canvasHeight / tileSize);
+        const gridCols = Math.floor(levelLength / tileSize);
 
-        // Background and basic structure
-        const topY = 0;
-        const bottomY = this.canvasHeight - platHeight;
+        // Helper to add platform
+        const addP = (r, c, w = 1, h = 1) => {
+            platforms.push(new Platform(c * tileSize, r * tileSize, w * tileSize, h * tileSize, '#bdbdbd'));
+        };
 
-        // Grid-based generation
-        for (let x = 0; x < levelLength; x += 200) {
-            const isStart = x < 400;
-            const isEnd = x > levelLength - 400;
+        // Helper to add spike
+        const addS = (r, c, dir) => {
+            const size = 20;
+            const x = c * tileSize + (tileSize - size) / 2;
+            const y = dir === 1 ? (r + 1) * tileSize - size : r * tileSize;
+            hazards.push(new Spike(x, y, size, '#fff', dir));
+        };
 
-            // Thick ceiling and floor for "Escape" feel
-            platforms.push(new Platform(x, topY, 205, platHeight, '#888'));
-            platforms.push(new Platform(x, bottomY, 205, platHeight, '#888'));
+        // Initialize with top and bottom borders
+        for (let c = 0; c < gridCols; c++) {
+            addP(0, c);
+            addP(gridRows - 1, c);
+        }
 
-            if (!isStart && !isEnd) {
-                const type = Math.floor(Math.random() * 6);
+        // Generate winding path segments
+        let currentR = Math.floor(gridRows / 2);
+        const corridorHeight = 6; // Wider tunnels (Easy Mode)
 
-                switch (type) {
-                    case 0: // Narrow vertical gap from top
-                        platforms.push(new Platform(x + 50, topY + platHeight, 100, 180, '#777'));
-                        hazards.push(new Spike(x + 10, bottomY - 40, 40, '#ff3333', 1));
-                        hazards.push(new Spike(x + 150, bottomY - 40, 40, '#ff3333', 1));
-                        break;
-                    case 1: // Narrow vertical gap from bottom
-                        platforms.push(new Platform(x + 50, bottomY - 180, 100, 180, '#777'));
-                        hazards.push(new Spike(x + 10, topY + platHeight, 40, '#ff3333', -1));
-                        hazards.push(new Spike(x + 150, topY + platHeight, 40, '#ff3333', -1));
-                        break;
-                    case 2: // Symmetrical pinch
-                        platforms.push(new Platform(x + 50, topY + platHeight, 100, 100, '#666'));
-                        platforms.push(new Platform(x + 50, bottomY - 100, 100, 100, '#666'));
-                        break;
-                    case 3: // Central island
-                        platforms.push(new Platform(x + 20, 180, 160, 90, '#999'));
-                        break;
-                    case 4: // Wall of spikes
-                        for (let i = 0; i < 4; i++) {
-                            hazards.push(new Spike(x + i * 50, bottomY - 40, 40, '#ff3333', 1));
-                            hazards.push(new Spike(x + i * 50, topY + platHeight, 40, '#ff3333', -1));
-                        }
-                        break;
-                    case 5: // Floating platforms staggered
-                        platforms.push(new Platform(x, 140, 100, 40, '#aaa'));
-                        platforms.push(new Platform(x + 100, 280, 100, 40, '#aaa'));
-                        break;
+        for (let c = 0; c < gridCols; c += 4) {
+            const segmentWidth = 4;
+            const isStart = c < 12; // 720px safe start
+            const isEnd = c > gridCols - 8;
+
+            if (isStart || isEnd) continue;
+
+            const rand = Math.random();
+            const halfH = Math.floor(corridorHeight / 2);
+
+            if (rand < 0.1) { // Reduced verticality
+                // Vertical Shaft UP
+                const upDist = 1;
+                const newR = Math.max(3, currentR - upDist);
+                for (let r = newR - halfH; r <= currentR + halfH; r++) {
+                    addP(r, c);
+                    addP(r, c + 3);
                 }
+                currentR = newR;
+            } else if (rand > 0.9) {
+                // Vertical Shaft DOWN
+                const downDist = 1;
+                const newR = Math.min(gridRows - 4, currentR + downDist);
+                for (let r = currentR - halfH; r <= newR + halfH; r++) {
+                    addP(r, c);
+                    addP(r, c + 3);
+                }
+                currentR = newR;
+            } else {
+                // Horizontal Corridor
+                const ceil = currentR - halfH;
+                const floor = currentR + halfH;
+                addP(ceil, c, 4, 1);
+                addP(floor, c, 4, 1);
+
+                // Fewer spikes (Probability 0.2 instead of 0.4+)
+                if (Math.random() > 0.8) addS(ceil, c + 1, -1);
+                if (Math.random() > 0.8) addS(floor - 1, c + 2, 1);
+
+                // Occasional floating block, but not blocking the path
+                if (Math.random() > 0.9) addP(currentR, c + 2, 1, 1);
             }
+
+            // Smoothing borders
+            addP(currentR - (halfH + 1), c, 4, 1);
+            addP(currentR + (halfH + 1), c, 4, 1);
         }
 
         const goal = new Goal(levelLength - 150, 0, this.canvasHeight);
-
-        return {
-            platforms,
-            hazards,
-            goal,
-            levelLength
-        };
+        return { platforms, hazards, goal, levelLength };
     }
 
     nextLevel() {
