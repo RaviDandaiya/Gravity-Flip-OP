@@ -92,48 +92,55 @@ export class Player extends Entity {
     }
 
     update(dt, arenaHeight, platforms) {
+        if (!platforms) return;
+
         // 1. Horizontal Movement & Resolution
+        let moveX = 0;
         if (this.isBot) {
-            this.vx = this.baseSpeed; // Bot moves forward automatically
+            moveX = this.baseSpeed * dt;
         } else {
-            this.vx = 0;
-            if (this.keys.left) this.vx = -this.baseSpeed;
-            if (this.keys.right) this.vx = this.baseSpeed;
+            if (this.keys.left) moveX -= this.baseSpeed * dt;
+            if (this.keys.right) moveX += this.baseSpeed * dt;
         }
 
-        this.x += this.vx * dt;
+        this.x += moveX;
 
-        if (platforms) {
-            for (const platform of platforms) {
-                if (this.collidesWith(platform)) {
-                    const pb = platform.getBounds();
-                    // Just hit a wall from the left
-                    if (this.vx > 0) {
-                        this.x = pb.left - this.width;
-                        this.vx = 0; // Stop moving
-                    }
+        for (const platform of platforms) {
+            if (this.collidesWith(platform)) {
+                const pb = platform.getBounds();
+                if (moveX > 0) { // Moving right
+                    this.x = pb.left - this.width;
+                } else if (moveX < 0) { // Moving left
+                    this.x = pb.right;
                 }
+                this.vx = 0;
             }
         }
 
         // 2. Vertical Movement & Resolution
         this.vy += this.gravity * this.gravityDir * dt;
-        this.y += this.vy * dt;
+        const moveY = this.vy * dt;
+        this.y += moveY;
         this.isGrounded = false;
 
-        if (platforms) {
-            for (const platform of platforms) {
-                if (this.collidesWith(platform)) {
-                    const pb = platform.getBounds();
-                    if (this.gravityDir === 1 && this.vy >= 0) {
+        for (const platform of platforms) {
+            if (this.collidesWith(platform)) {
+                const pb = platform.getBounds();
+                if (this.vy * this.gravityDir >= 0) { // Falling onto surface
+                    if (this.gravityDir === 1) {
                         this.y = pb.top - this.height;
-                        this.vy = 0;
-                        this.isGrounded = true;
-                    } else if (this.gravityDir === -1 && this.vy <= 0) {
+                    } else {
                         this.y = pb.bottom;
-                        this.vy = 0;
-                        this.isGrounded = true;
                     }
+                    this.vy = 0;
+                    this.isGrounded = true;
+                } else { // Jumping into surface (ceiling hit)
+                    if (this.gravityDir === 1) {
+                        this.y = pb.bottom;
+                    } else {
+                        this.y = pb.top - this.height;
+                    }
+                    this.vy = 0;
                 }
             }
         }

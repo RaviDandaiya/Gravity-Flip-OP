@@ -107,56 +107,58 @@ export class Game {
                 if (x < this.width / 2) this.players[0].flipGravity();
                 else this.players[1].flipGravity();
             }
-            window.addEventListener('keyup', (e) => {
-                const key = e.key.toLowerCase();
-                if (this.players[0]) {
-                    if (key === 'arrowleft' || key === 'a') this.players[0].keys.left = false;
-                    if (key === 'arrowright' || key === 'd') this.players[0].keys.right = false;
-                }
-            });
-        }
+        });
+
+        window.addEventListener('keyup', (e) => {
+            const key = e.key.toLowerCase();
+            if (this.players[0]) {
+                if (key === 'arrowleft' || key === 'a') this.players[0].keys.left = false;
+                if (key === 'arrowright' || key === 'd') this.players[0].keys.right = false;
+            }
+        });
+    }
 
     startSolo() {
-            this.mode = 'SOLO';
-            this.resetGame();
-        }
+        this.mode = 'SOLO';
+        this.resetGame();
+    }
 
     startMulti() {
-            this.mode = 'MULTI';
-            this.resetGame();
-        }
+        this.mode = 'MULTI';
+        this.resetGame();
+    }
 
     resetGame() {
-            console.log('--- RESTARTING GAME ---');
-            this.levelManager.reset();
-            this.initLevel();
-            this.state = 'PLAYING';
-            this.lastTime = performance.now(); // Use current high-res time
-            this.ui.showScreen('game-ui');
-            console.log('Game State:', this.state, 'Level:', this.levelManager.currentLevel);
-        }
+        console.log('--- RESTARTING GAME ---');
+        this.levelManager.reset();
+        this.initLevel();
+        this.state = 'PLAYING';
+        this.lastTime = performance.now(); // Use current high-res time
+        this.ui.showScreen('game-ui');
+        console.log('Game State:', this.state, 'Level:', this.levelManager.currentLevel);
+    }
 
     gameOver(msg) {
-            this.state = 'GAME_OVER';
-            const leadPlayerX = Math.max(...this.players.map(p => p.x), 100);
-            const distanceCovered = Math.floor((leadPlayerX - 100) / 10);
-            this.ui.setGameOver(msg, this.levelManager.currentLevel, distanceCovered);
-            this.ui.showScreen('game-over-screen');
-        }
+        this.state = 'GAME_OVER';
+        const leadPlayerX = Math.max(...this.players.map(p => p.x), 100);
+        const distanceCovered = Math.floor((leadPlayerX - 100) / 10);
+        this.ui.setGameOver(msg, this.levelManager.currentLevel, distanceCovered);
+        this.ui.showScreen('game-over-screen');
+    }
 
     initLevel() {
-            const config = this.levelManager.getMazeLevelConfig(this.levelManager.currentLevel);
+        const config = this.levelManager.getMazeLevelConfig(this.levelManager.currentLevel);
 
-            this.platforms = config.platforms;
-            this.hazards = config.hazards;
-            this.goal = config.goal;
-            this.offsetX = 0;
+        this.platforms = config.platforms;
+        this.hazards = config.hazards;
+        this.goal = config.goal;
+        this.offsetX = 0;
 
-            // Reset particles (Minimalist mode - no clouds/dust)
-            this.clouds = [];
+        // Reset particles (Minimalist mode - no clouds/dust)
+        this.clouds = [];
 
-            this.players = [];
-            if(this.mode === 'SOLO') {
+        this.players = [];
+        if (this.mode === 'SOLO') {
             this.players.push(new Player(100, this.height / 2, '#39FF14', 'YOU'));
         } else {
             // Player 1 starts at 100, Bot starts at 50 (trailing slightly)
