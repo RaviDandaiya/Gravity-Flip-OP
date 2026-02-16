@@ -133,20 +133,26 @@ export class Game {
     }
 
     initLevel() {
-        const config = this.levelManager.getLevelConfig(this.levelManager.currentLevel);
+        const isMulti = this.mode === 'MULTI';
+        const config = isMulti
+            ? this.levelManager.getDungeonLevelConfig(this.levelManager.currentLevel)
+            : this.levelManager.getDungeonLevelConfig(this.levelManager.currentLevel); // Let's use it for both now for the "Escape" request
+
         this.platforms = config.platforms;
         this.hazards = config.hazards;
         this.goal = config.goal;
         this.offsetX = 0;
 
-        // Background particles/clouds for parallax
+        // Background particles - Clouds for Solo, Dust/Embers for Dungeon
         this.clouds = [];
-        for (let i = 0; i < 15; i++) {
+        const cloudCount = isMulti ? 30 : 15;
+        for (let i = 0; i < cloudCount; i++) {
             this.clouds.push({
                 x: Math.random() * this.width * 2,
                 y: Math.random() * this.height,
-                size: 20 + Math.random() * 60,
-                speed: 0.2 + Math.random() * 0.3
+                size: isMulti ? 2 + Math.random() * 3 : 20 + Math.random() * 60,
+                speed: 0.2 + Math.random() * 0.3,
+                opacity: isMulti ? 0.2 : 0.4
             });
         }
 
@@ -246,10 +252,10 @@ export class Game {
     draw() {
         this.ctx.clearRect(0, 0, this.width, this.height);
 
-        // Draw Parallax Clouds
-        this.ctx.fillStyle = 'rgba(255, 255, 255, 0.4)';
+        // Draw Parallax Clouds/Dust
         if (this.clouds) {
             this.clouds.forEach(c => {
+                this.ctx.fillStyle = `rgba(255, 255, 255, ${c.opacity || 0.4})`;
                 const cx = (c.x - this.offsetX * c.speed) % (this.width * 2);
                 const drawX = cx < 0 ? cx + this.width * 2 : cx;
                 this.ctx.beginPath();

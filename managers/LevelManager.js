@@ -13,46 +13,58 @@ export class LevelManager {
         this.currentLevel = 1;
     }
 
-    getLevelConfig(level) {
-        const levelLength = 2000 + level * 500;
+    getDungeonLevelConfig(level) {
+        const levelLength = 2500 + level * 400;
         const platforms = [];
         const hazards = [];
-
         const platHeight = 40;
+
+        // Walls and Floors
         const topY = 0;
         const bottomY = this.canvasHeight - platHeight;
+        const midY = (this.canvasHeight / 2) - (platHeight / 2);
 
-        // Continuous top and bottom platforms with some gaps
-        // Increased platform width and gap spacing for better "completable" feel
-        const step = 500; // More frequent transitions
-        const platWidth = 400; // Smaller platforms = harder!
+        for (let x = 0; x < levelLength; x += 400) {
+            const isStart = x < 500;
+            const isEnd = x > levelLength - 500;
 
-        for (let x = 0; x < levelLength; x += step) {
-            // First 600px are safe
-            const isStart = x < 600;
-            const gapChance = isStart ? 0 : (0.15 + (level / 30)); // Progression gets much harder
+            // Always have ceiling and floor in dungeon (Escape the Room feel)
+            platforms.push(new Platform(x, topY, 405, platHeight, '#222'));
+            platforms.push(new Platform(x, bottomY, 405, platHeight, '#222'));
 
-            if (Math.random() < gapChance) continue;
+            if (!isStart && !isEnd) {
+                const rand = Math.random();
 
-            platforms.push(new Platform(x, topY, platWidth, platHeight));
-            platforms.push(new Platform(x, bottomY, platWidth, platHeight));
+                // 1. Horizontal Dividers (Middle path)
+                if (rand < 0.6) {
+                    platforms.push(new Platform(x + 100, midY, 200, 20, '#333'));
+                }
 
-            // Hazard density increases significantly with level
-            if (x > 800) {
-                const count = Math.min(Math.floor(1 + level / 3), 4);
-                for (let i = 0; i < count; i++) {
-                    const hx = x + 40 + Math.random() * (platWidth - 80);
-                    // Hazard on top or bottom
-                    if (Math.random() < 0.5) {
-                        hazards.push(new Spike(hx, topY + platHeight, 30, '#ff0000', -1));
-                    } else {
-                        hazards.push(new Spike(hx, bottomY - 30, 30, '#ff0000', 1));
-                    }
+                // 2. Vertical Blockages (Force gravity flip)
+                if (rand > 0.7) {
+                    // Top blockage
+                    platforms.push(new Platform(x + 200, topY + platHeight, 40, 150, '#222'));
+                    // Bottom hazards near blockage
+                    hazards.push(new Spike(x + 150, bottomY - 30, 30, '#ff3333', 1));
+                    hazards.push(new Spike(x + 250, bottomY - 30, 30, '#ff3333', 1));
+                } else if (rand < 0.3) {
+                    // Bottom blockage
+                    platforms.push(new Platform(x + 200, bottomY - 150, 40, 150, '#222'));
+                    // Top hazards
+                    hazards.push(new Spike(x + 150, topY + platHeight, 30, '#ff3333', -1));
+                    hazards.push(new Spike(x + 250, topY + platHeight, 30, '#ff3333', -1));
+                }
+
+                // 3. Cluster of spikes
+                if (rand > 0.4 && rand < 0.6) {
+                    const hx = x + 50;
+                    hazards.push(new Spike(hx, bottomY - 30, 30, '#ff3333', 1));
+                    hazards.push(new Spike(hx + 40, bottomY - 30, 30, '#ff3333', 1));
                 }
             }
         }
 
-        const goal = new Goal(levelLength - 100, 0, this.canvasHeight);
+        const goal = new Goal(levelLength - 150, 0, this.canvasHeight);
 
         return {
             platforms,
