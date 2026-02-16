@@ -1,68 +1,61 @@
-# GRAVITY FLIP OP - Pro Edition
+# GRAVITY FLIP - Cave Maze Edition 🏰🧗‍♂️
 
-An intense, high-speed neon gravity-shifting runner built with Vanilla JS and HTML5 Canvas. Experience hardcore platforming, dynamic themes, and a competitive race against a PRO AI Bot.
+**Gravity Flip** is an atmospheric, high-precision gravity-shifting runner built for the browser. Navigate through deep, winding caverns as a glowing blue block, dodging dense spikes and clearing massive gaps in a race against the "Pro Bot."
 
-![Gameplay Preview](screenshot.png) *(Note: Add your own screenshot here)*
+---
 
-## 🚀 Features
+## ✨ Features (The "Cave Maze" Update)
 
-- **Hardcore Gravity Mechanics**: Instant flip response with smooth visual animations.
-- **Pro AI Bot Mode**: Race against a high-accuracy AI bot that adapts to its speed.
-- **Dynamic Theme System**: 
-  - **NEON**: Classic electric arcade vibe.
-  - **MONO**: Sharp, high-contrast grayscale mode.
-  - **SPACE**: Deep cosmic atmosphere.
-- **Sleek Visuals**: 
-  - Black player bodies with vibrant neon borders.
-  - Dynamic shadow trail animations for every movement.
-  - Responsive layout (Landscape optimized).
-- **20 Pro Levels**: Procedurally influenced level generation that gets harder as you progress.
-- **Mobile Optimized**: Built-in support for touch controls and orientation warnings.
-
-## 🛠️ Tech Stack
-
-- **Engine**: Custom Vanilla Javascript Game Engine.
-- **Rendering**: HTML5 Canvas API.
-- **Styling**: Modern CSS3 with Viewport units and Aspect-Ratio handling.
-- **Build Tool**: [Vite](https://vitejs.dev/) for ultra-fast development.
+- **Atmospheric Cave Aesthetic**: Deep stone backgrounds with subtle "flashlight" menu lighting and premium glassmorphism UI.
+- **Easy Mode & Auto-Move**: The player character now moves forward automatically at a steady pace, focusing the gameplay on rhythmic gravity timing.
+- **Spacious Maze Generation**: Procedural "Cave Tiling" creates winding corridors and vertical shafts that are guaranteed to be completable.
+- **Blue Block Visuals**: A bright sky-blue character with expressive blocky eyes, matching the reference industrial aesthetic.
+- **Industrial Hazards**: Small, dense white spikes and light gray stone platforms with distinct dark borders.
+- **Multi-Theme Support**:
+  - **CAVE**: The default high-contrast stone experience.
+  - **DARK**: A minimalist, deep-shadow mode.
+  - **VOID**: A cosmic, pitch-black aesthetic.
+- **Race Against Bot**: Challenge a "PRO BOT" that adapts to the terrain, pushing you to master every flip.
 
 ## 🕹️ Controls
 
-| Action | Keyboard | Touch |
-| :--- | :--- | :--- |
-| **Flip Gravity** | `Space`, `W`, `S`, `ArrowUp`, `ArrowDown` | Tap Screen |
-| **Reset Level** | `R` key | RESET Button |
-| **P2 Controls** | `ArrowKeys` (Local Multi Legacy) | Right half of screen |
+| Action | Control |
+| :--- | :--- |
+| **Flip Gravity** | `Space`, `W`, `S`, `ArrowUp`, `ArrowDown` or **Tap/Click** |
+| **Instant Reset** | `R` key or **RESET** button |
+| **Navigate Menu** | Mouse / Pointer |
 
-## 📦 Setup & Installation
+---
 
-1. **Clone the repository**:
+## 🛠️ Tech Stack
+
+- **Engine**: Custom Vanilla Javascript logic for axis-separated collisions and gravity physics.
+- **Rendering**: 60fps HTML5 Canvas rendering.
+- **Build**: [Vite](https://vitejs.dev/) for ultra-fast local development and production bundling.
+- **Styling**: Modern CSS3 with radial gradients and glassmorphism.
+
+---
+
+## 📦 Local Setup
+
+1. **Clone the repo**:
    ```bash
    git clone https://github.com/RaviDandaiya/Gravity-Flip-OP.git
    cd gravity-flip
    ```
 
-2. **Install dependencies**:
+2. **Install**:
    ```bash
    npm install
    ```
 
-3. **Run for development**:
+3. **Play**:
    ```bash
    npm run dev
    ```
 
-4. **Build for production**:
-   ```bash
-   npm run build
-   ```
-
-## 📈 SEO & Performance
-
-- Fully optimized meta tags for SEO.
-- JSON-LD Structured Data for search engine indexing.
-- 60 FPS fluid rendering via `requestAnimationFrame`.
-- Pixel-perfect scaling for all screen sizes.
-
 ---
-Developed with ❤️ by **Ravi Dandaiya**
+
+*“Can you master the flip in the depths?”*
+
+Developed by **Ravi Dandaiya** 🚀
