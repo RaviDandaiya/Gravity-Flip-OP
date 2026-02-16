@@ -12,6 +12,7 @@ export class Player extends Entity {
         this.flipCooldown = 0;
         this.isBot = isBot;
         this.trail = []; // Array of {x, y, scale} for shadow animation
+        this.keys = { left: false, right: false };
     }
 
     flipGravity() {
@@ -92,7 +93,14 @@ export class Player extends Entity {
 
     update(dt, arenaHeight, platforms) {
         // 1. Horizontal Movement & Resolution
-        this.vx = this.baseSpeed;
+        if (this.isBot) {
+            this.vx = this.baseSpeed; // Bot moves forward automatically
+        } else {
+            this.vx = 0;
+            if (this.keys.left) this.vx = -this.baseSpeed;
+            if (this.keys.right) this.vx = this.baseSpeed;
+        }
+
         this.x += this.vx * dt;
 
         if (platforms) {
