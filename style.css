@@ -100,6 +100,9 @@ body {
   height: 100%;
   image-rendering: pixelated;
   image-rendering: crisp-edges;
+  touch-action: none;
+  /* Prevent scrolling/zooming while playing */
+  cursor: pointer;
 }
 
 #ui-layer {
@@ -250,6 +253,8 @@ body {
 
 #game-ui {
   background: transparent;
+  pointer-events: none;
+  /* Allow clicks to pass through to canvas */
 }
 
 .btn-tiny {
@@ -262,6 +267,7 @@ body {
   font-weight: 700;
   cursor: pointer;
   pointer-events: auto;
+  /* Re-enable for the button */
 }
 
 .game-hint {
