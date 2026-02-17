@@ -34,26 +34,28 @@ body {
   color: var(--text-color);
   display: flex;
   flex-direction: column;
-  justify-content: flex-start;
+  justify-content: center;
   align-items: center;
-  padding: 20px 0;
-  gap: 20px;
+  padding: 0;
+  /* Remove fixed padding to prevent scrolling on landscape */
+  min-height: 100vh;
+  gap: 10px;
 }
 
 #app {
   position: relative;
-  /* Base size for mobile/small screens */
-  width: 95vw;
-  height: calc(95vw * 9 / 16);
+  /* Base size: try to fill the screen but keep 16:9 ratio */
+  width: 98vw;
+  height: min(98vw * 9 / 16, 95vh);
 
-  /* Capped for very large screens to keep it playable */
+  /* Capped for very large screens */
   max-width: 1200px;
   max-height: 675px;
 
   overflow: hidden;
-  border-radius: 12px;
-  box-shadow: 0 20px 80px rgba(0, 0, 0, 0.8);
-  border: 4px solid #222;
+  border-radius: 8px;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.8);
+  border: 2px solid #333;
   background: black;
 
   transition: all 0.3s ease;
@@ -61,29 +63,34 @@ body {
 
 @media (min-aspect-ratio: 16/9) {
   #app {
-    height: 90vh;
-    width: calc(90vh * 16 / 9);
+    height: 95vh;
+    width: calc(95vh * 16 / 9);
   }
 }
 
 /* Orientation handling */
-@media screen and (orientation: portrait) {
+/* Orientation handling: only show if strictly vertical and mobile-sized */
+@media screen and (orientation: portrait) and (max-width: 1024px) {
   body::after {
-    content: "PLEASE ROTATE YOUR DEVICE";
+    content: "PLEASE ROTATE YOUR DEVICE FOR BEST EXPERIENCE";
     position: fixed;
     top: 0;
     left: 0;
     width: 100vw;
     height: 100vh;
-    background: #000;
+    background: radial-gradient(circle at center, #1a1a1a 0%, #000 100%);
     color: #fff;
     display: flex;
     justify-content: center;
     align-items: center;
     z-index: 1000;
     font-weight: 900;
-    font-size: 1.5rem;
+    font-size: 1.2rem;
+    padding: 2rem;
+    text-align: center;
     letter-spacing: 2px;
+    border: 4px solid #4fc3f7;
+    box-sizing: border-box;
   }
 }
 
@@ -364,7 +371,7 @@ body {
   justify-content: center;
   align-items: center;
   background: #111;
-  padding: 15px 0;
+  padding: 8px 0;
   border-top: 2px solid #222;
   margin-top: auto;
 }

@@ -189,7 +189,7 @@ export class Game {
 
             const humanPlayer = this.players[0];
             this.offsetX = humanPlayer.x - 200;
-            this.offsetY = humanPlayer.y - this.height / 2;
+            this.offsetY = 0;
 
             const dist = Math.floor((this.goal.x - humanPlayer.x) / 10);
             this.ui.updateTimer(dist > 0 ? dist : 0);
